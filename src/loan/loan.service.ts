@@ -1,14 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Loan } from './loan.entity';
 
 @Injectable()
 export class LoanService {
-  calculateLoanPaymentSchedule(
-    loanAmount: number,
-    interestRate: number,
-    termInYears: number,
-  ): any[] {
-    // Logic for calculating loan payment schedule
-    const schedule = []; // Replace with the proper calculation logic
-    return schedule;
+  constructor(
+    @InjectRepository(Loan)
+    private readonly loanRepository: Repository<Loan>,
+  ) {}
+
+  async findById(id: string): Promise<Loan | null> {
+    return this.loanRepository.findOne({ where: { id } });
+  }
+
+  async createLoan(loanData: Partial<Loan>): Promise<Loan> {
+    const newLoan = this.loanRepository.create(loanData);
+    return this.loanRepository.save(newLoan);
   }
 }

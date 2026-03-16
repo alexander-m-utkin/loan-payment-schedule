@@ -15,7 +15,7 @@ export class Investment {
   @Column('varchar', { nullable: false })
   state: string;
 
-  @ManyToOne(() => Loan, { nullable: false })
+  @ManyToOne(() => Loan, (loan) => loan.investments, { nullable: false })
   loan: Loan;
 
   @Column('float', { nullable: false })

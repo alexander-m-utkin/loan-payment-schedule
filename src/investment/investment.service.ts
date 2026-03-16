@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Investment } from './investment.entity';
+import { Loan } from '../loan/loan.entity';
 
 @Injectable()
 export class InvestmentService {
@@ -21,5 +22,9 @@ export class InvestmentService {
 
   findByInvestorId(investorId: string): Promise<Investment[]> {
     return this.investmentRepository.find({ where: { investorId } });
+  }
+
+  findByLoan(loan: Loan): Promise<Investment[]> {
+    return this.investmentRepository.find({ where: { loan } });
   }
 }
