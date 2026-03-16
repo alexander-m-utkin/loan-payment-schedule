@@ -89,4 +89,72 @@ export class InvestmentService {
       console.log(`Successfully imported investment for loan ID: ${loanId}`);
     }
   }
+
+  async calculateInvestorSchedule(investmentId: string): Promise<
+    {
+      paymentNumber: number;
+      paymentDate: string;
+      principal: number;
+      loanInterest: number;
+      strategyCompensation: number;
+    }[]
+  > {
+    const investment = await this.investmentRepository.findOne({
+      where: { id: investmentId },
+      relations: ['loan'],
+    });
+
+    if (!investment) {
+      throw new Error(`Investment with id ${investmentId} not found`);
+    }
+
+    const { loan } = investment;
+    const { amount, issuedAt, loanTenureDays, paymentPeriodDays, rate } = loan;
+
+    if (loanTenureDays <= 0 || paymentPeriodDays <= 0) {
+      throw new Error('Invalid loan tenure or payment period');
+    }
+
+    const periods = Math.floor(loanTenureDays / paymentPeriodDays);
+    // const investmentShare = investment.investmentAmount / amount;
+    const periodRate = (rate * paymentPeriodDays) / 365;
+    const strategyRate =
+      (investment.investorStrategyRate || 0) > rate
+        ? rate
+        : investment.investorStrategyRate;
+    const strategyPeriodRate = (strategyRate * paymentPeriodDays) / 365;
+
+    const schedule: {
+      paymentNumber: number;
+      paymentDate: string;
+      principal: number;
+      loanInterest: number;
+      strategyCompensation: number;
+    }[] = [];
+
+    let remainingPrincipal = investment.investmentAmount;
+
+    for (let i = 1; i <= periods; i++) {
+      const loanInterest = remainingPrincipal * periodRate;
+      const strategyInterest = remainingPrincipal * strategyPeriodRate;
+      const strategyCompensation = Math.max(loanInterest - strategyInterest, 0);
+
+      const paymentPrincipal = investment.investmentAmount / periods;
+
+      const paymentDate = new Date(issuedAt);
+      paymentDate.setDate(paymentDate.getDate() + i * paymentPeriodDays);
+
+      schedule.push({
+        paymentNumber: i,
+        paymentDate: paymentDate.toISOString(),
+        principal: +paymentPrincipal.toFixed(2),
+        loanInterest: +loanInterest.toFixed(2),
+        strategyCompensation: +strategyCompensation.toFixed(2),
+      });
+
+      remainingPrincipal -= paymentPrincipal;
+    }
+
+    return schedule;
+  }
 }
