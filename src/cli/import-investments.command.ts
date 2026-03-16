@@ -37,61 +37,7 @@ export class ImportInvestmentsCommand extends CommandRunner {
         );
       }
 
-      for (const entry of investments) {
-        if (!entry.loanId || !entry.investorId || !entry.investmentAmount) {
-          console.error(
-            'Skipping entry due to missing mandatory fields:',
-            entry,
-          );
-          continue;
-        }
-
-        const loanId = entry.loanId;
-
-        // Check if the loan already exists
-        let loan = await this.loanService.findById(loanId);
-
-        if (!loan) {
-          // Create new loan with default environment variables
-          loan = await this.loanService.createLoan({
-            id: loanId,
-            amount: Number(
-              this.configService.get<string>('DEFAULT_IMPORTING_LOAN_AMOUNT') ??
-                '0',
-            ),
-            issuedAt: new Date(
-              this.configService.get<string>(
-                'DEFAULT_IMPORTING_LOAN_ISSUE_DATE',
-              ) ?? new Date().toISOString(),
-            ),
-            loanTenureDays: Number(
-              this.configService.get<string>(
-                'DEFAULT_IMPORTING_LOAN_TENURE_DAYS',
-              ) ?? '0',
-            ),
-            paymentPeriodDays: Number(
-              this.configService.get<string>(
-                'DEFAULT_IMPORTING_LOAN_PAYMENT_PERIOD_DAYS',
-              ) ?? '0',
-            ),
-            rate: Number(
-              this.configService.get<string>('DEFAULT_IMPORTING_LOAN_RATE') ??
-                '0',
-            ),
-          });
-        }
-
-        // Create investment for the loan
-        await this.investmentService.create({
-          investorId: entry.investorId,
-          investmentAmount: Number(entry.investmentAmount),
-          state: entry.state || 'PENDING',
-          id: loan.id,
-          investorStrategyRate: Number(entry.investorStrategyRate || '0'),
-        });
-
-        console.log(`Successfully imported investment for loan ID: ${loanId}`);
-      }
+      await this.investmentService.importInvestments(investments);
 
       console.log('Import completed successfully.');
     } catch (error) {

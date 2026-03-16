@@ -22,7 +22,8 @@
     "migrate": "./node_modules/.bin/typeorm migration:run -d config/ormconfig.js",
     "migration:down": "./node_modules/.bin/typeorm migration:revert -d config/ormconfig.js",
     "migration:create": "./node_modules/.bin/typeorm migration:create",
-    "migration:generate": "./node_modules/.bin/typeorm migration:generate src/migrations/generated -d config/ormconfig.js"
+    "migration:generate": "./node_modules/.bin/typeorm migration:generate src/migrations/generated -d config/ormconfig.js",
+    "import-investments": "nest build && NODE_ENV=production node dist/main.cli.js import-investments"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
