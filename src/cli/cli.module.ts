@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { LoanModule } from './loan/loan.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { InvestmentModule } from './investment/investment.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { LoanModule } from '../loan/loan.module';
+import { InvestmentModule } from '../investment/investment.module';
+import { ImportInvestmentsCommand } from './import-investments.command';
 
 @Module({
   imports: [
@@ -18,14 +17,13 @@ import { InvestmentModule } from './investment/investment.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
     }),
     LoanModule,
     InvestmentModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [ImportInvestmentsCommand],
 })
-export class AppModule {}
+export class CliModule {}
