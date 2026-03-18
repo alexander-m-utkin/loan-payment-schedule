@@ -7,7 +7,7 @@ export class Loan {
   id: string;
 
   // Сумма займа в рублях
-  @Column('float', { nullable: false })
+  @Column('int', { nullable: false })
   amount: number;
 
   @OneToMany(() => Investment, (investment) => investment.loan)
@@ -18,11 +18,11 @@ export class Loan {
   issuedAt: Date;
 
   // Срок на который выдан займ, в днях
-  @Column('bigint', { nullable: false })
+  @Column('int', { nullable: false })
   loanTenureDays: number;
 
   // Платежный период в днях
-  @Column('bigint', { nullable: false })
+  @Column('int', { nullable: false })
   paymentPeriodDays: number;
 
   // Годовая процентная ставка в формате 0.17

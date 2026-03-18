@@ -1,120 +1,167 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Loan } from './loan.entity';
+import { LoanScheduleItem } from './types/loanSchedule.type';
+import { InvestmentService } from '../investment/investment.service';
 
 @Injectable()
 export class LoanService {
   constructor(
     @InjectRepository(Loan)
     private readonly loanRepository: Repository<Loan>,
+
+    @Inject(forwardRef(() => InvestmentService))
+    private readonly investmentService: InvestmentService,
   ) {}
 
   async findById(id: string): Promise<Loan | null> {
-    return this.loanRepository.findOne({ where: { id } });
+    return this.loanRepository.findOne({
+      where: { id },
+      relations: { investments: true },
+    });
   }
 
   async createLoan(loanData: Partial<Loan>): Promise<Loan> {
-    const newLoan = this.loanRepository.create(loanData);
+    const newLoan = this.loanRepository.create({
+      ...loanData,
+      amount: Math.floor(loanData.amount || 0),
+    });
     return this.loanRepository.save(newLoan);
   }
 
-  calculateSchedule(loan: Loan) {
+  async increaseLoan(loanId: string, increase: number): Promise<boolean> {
+    const loan = await this.loanRepository.findOne({ where: { id: loanId } });
+
+    if (!loan) return false;
+
+    await this.loanRepository.update(loanId, {
+      amount: Math.floor(loan.amount + increase),
+    });
+
+    return true;
+  }
+
+  calculateSchedule(loan: Loan): LoanScheduleItem[] {
     const { amount, issuedAt, loanTenureDays, paymentPeriodDays, rate } = loan;
 
     if (loanTenureDays <= 0 || paymentPeriodDays <= 0) {
       throw new BadRequestException('Invalid loan tenure or payment period');
     }
 
-    const periods = Math.floor(loanTenureDays / paymentPeriodDays);
-    if (periods <= 0) {
+    const periodsCount = Math.floor(loanTenureDays / paymentPeriodDays);
+    if (periodsCount <= 0) {
       throw new BadRequestException(
         'Payment period is greater than loan tenure',
       );
     }
 
-    if (loanTenureDays % paymentPeriodDays !== 0) {
-      throw new BadRequestException(
-        'Loan tenure must be divisible by payment period',
-      );
-    }
+    // Ставка за один день
+    const dailyRate = rate / 365;
 
-    const amountCents = Math.round(amount * 100);
-    const annualRate = rate;
-    const periodRate = (annualRate * paymentPeriodDays) / 365;
+    // Начисления по процентам за весь займ целиком
+    const realInterest = Math.floor(amount * loanTenureDays * dailyRate);
 
-    const schedule: {
-      paymentNumber: number;
-      paymentDate: string;
-      principal: number;
-      interest: number;
-    }[] = [];
+    // Расчетный основной долг за один платежный период
+    const periodAmount = Math.floor(amount / periodsCount);
 
-    let remainingCents = amountCents;
+    // Процентная ставка за платежный период
+    const periodRate = dailyRate * paymentPeriodDays;
 
-    let paymentCents: number;
-    if (periodRate === 0) {
-      paymentCents = Math.round(amountCents / periods);
-    } else {
-      const r = periodRate;
-      const annuity = (amount * r) / (1 - Math.pow(1 + r, -periods)); // in currency units
-      paymentCents = Math.round(annuity * 100);
-    }
+    // Расчетные начисления по процентам за один платежный период
+    const periodInterest = Math.floor(periodRate * amount);
 
-    let totalPrincipalCents = 0;
+    const schedules: LoanScheduleItem[] = [];
 
-    for (let i = 1; i <= periods; i++) {
-      const interestCents = Math.round(remainingCents * periodRate);
-      let principalCents = paymentCents - interestCents;
+    // Подсчет значений по периодам
+    for (let i = 1; i <= periodsCount; i++) {
+      const paymentDate = new Date();
+      paymentDate.setDate(issuedAt.getDate() + 30);
 
-      if (principalCents < 0) {
-        throw new BadRequestException('Calculated principal is negative');
-      }
-
-      if (principalCents > remainingCents) {
-        principalCents = remainingCents;
-      }
-
-      remainingCents -= principalCents;
-      totalPrincipalCents += principalCents;
-
-      const paymentDate = new Date(issuedAt);
-      paymentDate.setDate(paymentDate.getDate() + i * paymentPeriodDays);
-
-      schedule.push({
+      schedules.push({
         paymentNumber: i,
-        paymentDate: paymentDate.toISOString(),
-        principal: +(principalCents / 100).toFixed(2),
-        interest: +(interestCents / 100).toFixed(2),
+        paymentDate,
+        principal: periodAmount,
+        interest: periodInterest,
       });
     }
 
-    const diff = amountCents - totalPrincipalCents;
-    if (Math.abs(diff) > 1) {
-      // adjust last payment principal to fix rounding
-      const last = schedule[schedule.length - 1];
-      const lastPrincipalCents = Math.round(last.principal * 100) + diff;
-      if (lastPrincipalCents <= 0) {
-        throw new BadRequestException(
-          'Rounding adjustment led to non-positive last principal',
-        );
-      }
+    // ИСПРАВЛЕНИЕ ПОГРЕШНОСТЕЙ.
+    // Сравниваем расчеты за весь срок целиком и сумму периодов (долг и проценты).
+    // Разницу распределяем по платежам, остаток добавляем в последний платеж.
 
-      last.principal = +(lastPrincipalCents / 100).toFixed(2);
-    }
+    // для основного долга:
+    const schedulesAmount = periodAmount * periodsCount;
+    const amountDif = Math.floor(amount - schedulesAmount);
+    if (amountDif !== 0) {
+      // Распределим разницу по всем платежам
+      const periodAmountDif = Math.floor(amountDif / periodsCount);
+      schedules.forEach(
+        (item, i) => (schedules[i].principal += periodAmountDif),
+      );
 
-    // final validation
-    const sumPrincipal = schedule.reduce(
-      (acc, item) => acc + item.principal,
-      0,
-    );
-    const sumPrincipalCents = Math.round(sumPrincipal * 100);
-    if (sumPrincipalCents !== amountCents) {
-      throw new BadRequestException(
-        'Total principal over schedule does not equal loan amount',
+      // Неделимый остаток добавим в последний платеж:
+      schedules[schedules.length - 1].principal += Math.floor(
+        amountDif % periodsCount,
       );
     }
 
-    return schedule;
+    // для процентов:
+    const schedulesInterest = periodInterest * periodsCount;
+    const interestDif = Math.floor(realInterest - schedulesInterest);
+    if (interestDif !== 0) {
+      // Распределим разницу по всем платежам
+      const periodInterestDif = Math.floor(interestDif / periodsCount);
+      schedules.forEach(
+        (item, i) => (schedules[i].interest += periodInterestDif),
+      );
+
+      // Неделимый остаток добавим в последний платеж:
+      schedules[schedules.length - 1].interest += Math.floor(
+        interestDif % periodsCount,
+      );
+    }
+
+    // Добавляем расчеты по инвестициям
+    schedules.forEach(
+      (item) =>
+        (item.investments =
+          this.investmentService.calculateInvestmentsSchedule(loan)),
+    );
+
+    // ПРОВЕРКИ:
+    console.log('Основной долг займа целиком:', amount);
+
+    console.log(
+      'Сумма основного долга по запланированным платежам:',
+      schedules.reduce((sum, item) => sum + item.principal, 0),
+    );
+
+    console.log(
+      'Начислений по процентам целиком:',
+      amount * dailyRate * loanTenureDays,
+    );
+
+    console.log(
+      'Сумма начислений по процентам по запланированным платежам:',
+      schedules.reduce((sum, item) => sum + item.interest, 0),
+    );
+
+    // Маппинг
+    schedules.forEach((item) => {
+      item.paymentDate =
+        item.paymentDate instanceof Date
+          ? item.paymentDate.toISOString().split('T')[0]
+          : item.paymentDate;
+      item.interest /= 100;
+      item.principal /= 100;
+    });
+
+    return schedules;
   }
 }

@@ -1,0 +1,278 @@
+[
+  {
+    "paymentNumber": 1,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 2,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 3,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 4,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 5,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 6,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 7,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 8,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 9,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 10,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 11,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.66,
+    "interest": 7083.33,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  },
+  {
+    "paymentNumber": 12,
+    "paymentDate": "2026-04-15",
+    "principal": 41666.74,
+    "interest": 7083.37,
+    "investments": [
+      {
+        "investorId": "00000000-0000-0000-0000-000000000001",
+        "interestForPeriod": 13.97,
+        "strategyCompensationForPeriod": 1.64
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000002",
+        "interestForPeriod": 27.94,
+        "strategyCompensationForPeriod": 0
+      },
+      {
+        "investorId": "00000000-0000-0000-0000-000000000003",
+        "interestForPeriod": 6944.38,
+        "strategyCompensationForPeriod": 0
+      }
+    ]
+  }
+]

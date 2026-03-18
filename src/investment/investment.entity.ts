@@ -9,7 +9,8 @@ export class Investment {
   @Column('uuid', { nullable: false })
   investorId: string;
 
-  @Column('float', { nullable: false })
+  // Размер займа в копейках
+  @Column('int', { nullable: false })
   investmentAmount: number;
 
   @Column('varchar', { nullable: false })

@@ -6,6 +6,8 @@ import { LoanService } from '../loan/loan.service';
 import { InvestmentService } from '../investment/investment.service';
 import { ImportInvestmentEntity } from './types/import-investment-entity.type';
 
+const FILE_PATH = './importData/investments_with_strategy_rate.json';
+
 @Injectable()
 @Command({
   name: 'import-investments',
@@ -21,8 +23,9 @@ export class ImportInvestmentsCommand extends CommandRunner {
     super();
   }
 
-  async run(passedParams: string[]): Promise<void> {
-    const filePath = passedParams[0];
+  async run(): Promise<void> {
+    const filePath = FILE_PATH;
+
     if (!filePath) {
       throw new Error('Please provide the path to the JSON file.');
     }

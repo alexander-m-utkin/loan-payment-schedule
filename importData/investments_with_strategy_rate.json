@@ -1,5 +1,26 @@
 [
   {
+    "investorId": "00000000-0000-0000-0000-000000000001",
+    "investmentAmount": 1000,
+    "state": "confirmed",
+    "loanId": "00000000-0000-0000-0000-000000000000",
+    "investorStrategyRate": 0.19
+  },
+  {
+    "investorId": "00000000-0000-0000-0000-000000000002",
+    "investmentAmount": 2000,
+    "state": "confirmed",
+    "loanId": "00000000-0000-0000-0000-000000000000",
+    "investorStrategyRate": 0.14
+  },
+  {
+    "investorId": "00000000-0000-0000-0000-000000000003",
+    "investmentAmount": 497000,
+    "state": "confirmed",
+    "loanId": "00000000-0000-0000-0000-000000000000",
+    "investorStrategyRate": 0.17
+  },
+  {
     "investorId": "8d60c19e-ea9b-47d0-a696-0bc690d574b9",
     "investmentAmount": 297.66,
     "state": "confirmed",
