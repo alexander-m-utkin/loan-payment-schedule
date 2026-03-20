@@ -1,5 +1,6 @@
 export type InvestmentPeriodSchedule = {
-  investorId: string;
   interestForPeriod: number;
+  investorId: string;
+  principalForPeriod: number;
   strategyCompensationForPeriod: number;
 };

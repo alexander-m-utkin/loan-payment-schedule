@@ -183,12 +183,27 @@ export class InvestmentService {
     return schedule;
   }
 
-  calculateInvestmentsSchedule(loan: Loan): InvestmentPeriodSchedule[] {
+  calculateInvestmentsSchedule(
+    loan: Loan,
+    isLastPeriod = false,
+  ): InvestmentPeriodSchedule[] {
     const { investments } = loan;
     const result: InvestmentPeriodSchedule[] = [];
 
     investments.forEach((investment) => {
       const { investmentAmount } = investment;
+
+      // Тело инвестиции за период.
+      // Если период последний, то используем разность с основным долгом за все периоды.
+      const principalForPeriod = isLastPeriod
+        ? investment.investmentAmount -
+          Math.floor(
+            (investmentAmount / loan.loanTenureDays) * loan.paymentPeriodDays,
+          ) *
+            Math.floor(loan.loanTenureDays / loan.paymentPeriodDays)
+        : Math.floor(
+            (investmentAmount / loan.loanTenureDays) * loan.paymentPeriodDays,
+          );
 
       // Проценты инвестора за период
       const investmentInterestForPeriod =
@@ -201,8 +216,9 @@ export class InvestmentService {
         investmentAmount;
 
       result.push({
-        investorId: investment.investorId,
         interestForPeriod: Math.floor(investmentInterestForPeriod) / 100,
+        investorId: investment.investorId,
+        principalForPeriod: Math.floor(principalForPeriod) / 100,
         strategyCompensationForPeriod:
           Math.floor(strategyCompensationForPeriod) / 100,
       });

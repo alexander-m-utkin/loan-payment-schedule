@@ -78,18 +78,28 @@ export class LoanService {
 
     const schedules: LoanScheduleItem[] = [];
 
+    const lastPaymentDate = new Date(issuedAt);
+
     // Подсчет значений по периодам
     for (let i = 1; i <= periodsCount; i++) {
-      const paymentDate = new Date();
-      paymentDate.setDate(issuedAt.getDate() + 30);
+      lastPaymentDate.setDate(lastPaymentDate.getDate() + 30);
 
       schedules.push({
         paymentNumber: i,
-        paymentDate,
+        paymentDate: new Date(lastPaymentDate),
         principal: periodAmount,
         interest: periodInterest,
       });
     }
+
+    // Добавляем расчеты по инвестициям
+    schedules.forEach(
+      (item, i) =>
+        (item.investments = this.investmentService.calculateInvestmentsSchedule(
+          loan,
+          i === periodsCount - 1,
+        )),
+    );
 
     // ИСПРАВЛЕНИЕ ПОГРЕШНОСТЕЙ.
     // Сравниваем расчеты за весь срок целиком и сумму периодов (долг и проценты).
@@ -126,13 +136,6 @@ export class LoanService {
         interestDif % periodsCount,
       );
     }
-
-    // Добавляем расчеты по инвестициям
-    schedules.forEach(
-      (item) =>
-        (item.investments =
-          this.investmentService.calculateInvestmentsSchedule(loan)),
-    );
 
     // ПРОВЕРКИ:
     console.log('Основной долг займа целиком:', amount);
